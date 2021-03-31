@@ -1,1 +1,1 @@
-# GithubstatisticsWeb
+# GithubStatisticsWeb
