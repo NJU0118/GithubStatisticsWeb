@@ -1,5 +1,5 @@
 <template>
-  <v-chart class="chart" :option="option" />
+  <v-chart ref="line" class="chart" :option="option"/>
 </template>
 
 <script>
@@ -11,17 +11,40 @@
     },
     props: {
       year:String,
-      category:String
+      category:String,
+      keyData: {
+        type: Array,
+        // default: function () { return [] }
+        default: () => []
+      },
+      valueData: {
+        type: Array,
+        // default: function () { return [] }
+        default: () => []
+      },
     },
-    mounted() {
-      console.log(this.year)
+    watch: {
+      year (n, o) {
+        this.option.legend.data = [n];
+        this.option.series[0].name = n;
+        this.option.title.subtext = n;
+      },
+      keyData(n, o){
+        this.option.yAxis.data = n;
+      },
+      valueData(n, o){
+        this.option.series[0].data = n;
+      },
+      category(n, o){
+        this.option.title.text = this.categoryMapping(n);
+      }
     },
     data() {
       return {
         option: {
           title: {
-            text: 'github语言排行',
-            subtext: '数据来自github'
+            text: this.categoryMapping(this.category),
+            subtext: this.year
           },
           tooltip: {
             trigger: 'axis',
@@ -59,6 +82,18 @@
           ]
         }
       };
+    },
+    methods: {
+      categoryMapping(category) {
+        switch (category) {
+          case 'language':
+            return 'github语言排行';
+          case 'star':
+            return 'github项目Star数量分布';
+          case 'size':
+            return 'github项目大小分布';
+        }
+      }
     }
   };
 </script>
